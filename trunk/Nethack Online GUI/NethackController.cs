@@ -73,15 +73,18 @@ namespace Nethack_Online_GUI
             drawTile(col, row, graph);
         }
 
-        public void ConnectToNAO()
+        // Connect to server and send initial responses
+        public void Connect(string host, int port)
         {
             return;
             byte[] recvData;
-            //client.Connect("www.google.com", 80);//client.SendData(encoding.GetBytes("GET / HTTP/1.1\r\n\r\n"));
-            client.Connect("nethack.alt.org", 23);
+
+            client.Connect(host,port);
 
             recvData = client.GetData();
+
             DisplayReceivedData(recvData);
+
             ProcessReceivedData(recvData);
         }
 
@@ -94,6 +97,9 @@ namespace Nethack_Online_GUI
             for (int i = 0; i < data.Length; ++i)
             {
                 byte dataByte = data[i];
+                byte dataNextByte = 0;
+                if (i + 1 < data.Length) dataNextByte = data[i + 1];
+
 
                 if (dataByte != 0)
                 {
@@ -107,14 +113,28 @@ namespace Nethack_Online_GUI
                     { }
                     else if (dataByte == TelnetHelper.DO)
                     {
+                        byte[] SubNegotiationCommand;
+                        if (TelnetHelper.GetOptionDescription(dataNextByte) == "Terminal Type")
+                            SubNegotiationCommand = TelnetHelper.GetSubNegotiationCommand(dataNextByte, encoding.GetBytes("\0XTERM"));
+                        else if (TelnetHelper.GetOptionDescription(dataNextByte) == "Terminal Speed")
+                            SubNegotiationCommand = TelnetHelper.GetSubNegotiationCommand(dataNextByte, encoding.GetBytes("\038400,38400") );
+                        else if (TelnetHelper.GetOptionDescription(dataNextByte) == "X Display Location")
+                            SubNegotiationCommand = TelnetHelper.GetSubNegotiationCommand(dataNextByte, encoding.GetBytes("\x00\x05\x00\x18"));
+                        else if (TelnetHelper.GetOptionDescription(dataNextByte) == "New Environment Option")
+                            SubNegotiationCommand = TelnetHelper.GetSubNegotiationCommand(dataNextByte, encoding.GetBytes("\0"));
+                        else
+                            SubNegotiationCommand = null;
+
+                        if (SubNegotiationCommand != null)
+                            client.SendData(SubNegotiationCommand);
+
                     }
                     else if (dataByte == TelnetHelper.DONT)
                     {
-                        Console.Write("DON'T: ");
                     }
                     else if (dataByte == TelnetHelper.IAC)
                     {
-                        Console.Write("\nIAC ");
+
                     }
                     else
                     {
