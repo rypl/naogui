@@ -23,6 +23,11 @@ namespace Nethack_Online_GUI
 
         override protected void OnPaint(PaintEventArgs e)
         {
+            
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
             nhControl.Paint(e.Graphics);
         }
     }

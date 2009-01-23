@@ -75,6 +75,7 @@ namespace Nethack_Online_GUI
 
         public void ConnectToNAO()
         {
+            return;
             byte[] recvData;
             //client.Connect("www.google.com", 80);//client.SendData(encoding.GetBytes("GET / HTTP/1.1\r\n\r\n"));
             client.Connect("nethack.alt.org", 23);
