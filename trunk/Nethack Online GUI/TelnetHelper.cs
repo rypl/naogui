@@ -125,7 +125,7 @@ namespace Nethack_Online_GUI
 
             buffer[0] = IAC; // Command
             buffer[1] = SB;   // Subnegotiation Start
-            buffer[2] = option; // Passed in telnet option
+            buffer[2] = (byte)option; // Passed in telnet option
 
             // Copy data into our return buffer
             for (int i = 0; i < data.Length; ++i)
