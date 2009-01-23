@@ -18,7 +18,7 @@ namespace Nethack_Online_GUI
             
             nhControl = new NethackController();
 
-            nhControl.ConnectToNAO();
+            nhControl.Connect("nethack.alt.org", 23);
         }
 
         override protected void OnPaint(PaintEventArgs e)

@@ -131,8 +131,8 @@ namespace Nethack_Online_GUI
             for (int i = 0; i < data.Length; ++i)
                 buffer[3 + i] = data[i];
 
-            buffer[4 + data.Length] = IAC; // Command
-            buffer[5 + data.Length] = SE; // Subnegotiation Start
+            buffer[4 + data.Length - 1] = IAC; // Command
+            buffer[5 + data.Length - 1] = SE; // Subnegotiation End
 
             return buffer;
         }
