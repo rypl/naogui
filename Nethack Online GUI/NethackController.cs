@@ -10,6 +10,8 @@ namespace Nethack_Online_GUI
     class NethackController
     {
         const int NUM_TILES_COL = 40;
+        const int CONSOLE_WIDTH = 80;
+        const int CONSOLE_HEIGHT = 24;
 
         SocketConnection client;
         ASCIIEncoding encoding;
@@ -52,17 +54,19 @@ namespace Nethack_Online_GUI
 
         public void Paint(Graphics graph)
         {
-            graph.FillRectangle(new SolidBrush(Color.Black), new Rectangle(10, 110, 1280, 384)); //Dungeon Area
+            //graph.FillRectangle(new SolidBrush(Color.Black), new Rectangle(10, 110, 1280, 384)); //Dungeon Area
+            graph.FillRectangle(new SolidBrush(Color.Black), new Rectangle(0, 0, 1280, 384)); //Dungeon Area
 
             //drawTile(0, 0, graph);
-            drawTile(40, graph);
+            drawTile(0, graph);
 
             graph.Dispose();
         }
 
         public void drawTile(int col, int row, Graphics graph)
         {
-            graph.DrawImage(tiles, new Rectangle(10, 110, 16, 16), new Rectangle(col * 16, row * 16, 16, 16), GraphicsUnit.Pixel);
+//            graph.DrawImage(tiles, new Rectangle(10, 110, 16, 16), new Rectangle(col * 16, row * 16, 16, 16), GraphicsUnit.Pixel);
+            graph.DrawImage(tiles, new Rectangle(0, 0, 16, 16), new Rectangle(col * 16, row * 16, 16, 16), GraphicsUnit.Pixel);
         }
 
         public void drawTile(int tileNum, Graphics graph)
@@ -76,25 +80,52 @@ namespace Nethack_Online_GUI
         // Connect to server and send initial responses
         public void Connect(string host, int port)
         {
-            return;
             byte[] recvData;
+            int recvBytes;
 
             client.Connect(host,port);
 
+            recvBytes = client.ReceiveData();
             recvData = client.GetData();
 
-            DisplayReceivedData(recvData);
+            // Initial things our client will do
+            SendCommand(TelnetHelper.WILL, 0x03);   // WILL Supress Go Ahead
+            SendCommand(TelnetHelper.DO,   0x03);   // DO Suppress Go Ahead
+            SendCommand(TelnetHelper.WILL, 0x1F);   // WILL Negotiate about window size 
+            SendCommand(TelnetHelper.WILL, 0x20);   // WILL Terminal Speed 
+            SendCommand(TelnetHelper.WILL, 0x18);   // WILL Terminal Type 
+            SendCommand(TelnetHelper.WILL, 0x27);   // WILL New Enviroment Option
+            SendCommand(TelnetHelper.WILL, 0x01);   // WILL Echo
+ 
+            DisplayReceivedData(recvData, recvBytes);
 
-            ProcessReceivedData(recvData);
+            ProcessReceivedData(recvData, recvBytes);
         }
 
+        public bool SendCommand(int negotiation, int option)
+        {
+            byte[] sendData;
+
+            sendData = TelnetHelper.GetCommand(negotiation, option);
+
+            return client.SendData(sendData);
+        }
+
+        public bool SendSubNegotiation(int option, byte[] data)
+        {
+            byte[] SubNegotiationCommand;
+
+            SubNegotiationCommand = TelnetHelper.GetSubNegotiationCommand(option, data);
+
+            return client.SendData(SubNegotiationCommand);
+        }
 
         // Process Received Data, do not use for printing
         // This is where all the magic happens
-        public void ProcessReceivedData(byte[] data)
+        public void ProcessReceivedData(byte[] data, int dataLength)
         {
             //foreach (byte dataByte in data)
-            for (int i = 0; i < data.Length; ++i)
+            for (int i = 0; i < dataLength; ++i)
             {
                 byte dataByte = data[i];
                 byte dataNextByte = 0;
@@ -104,7 +135,9 @@ namespace Nethack_Online_GUI
                 if (dataByte != 0)
                 {
                     if (dataByte == TelnetHelper.SB)
-                    { }
+                    {
+
+                    }
                     else if (dataByte == TelnetHelper.SE)
                     { }
                     else if (dataByte == TelnetHelper.WILL)
@@ -113,28 +146,34 @@ namespace Nethack_Online_GUI
                     { }
                     else if (dataByte == TelnetHelper.DO)
                     {
-                        byte[] SubNegotiationCommand;
                         if (TelnetHelper.GetOptionDescription(dataNextByte) == "Terminal Type")
-                            SubNegotiationCommand = TelnetHelper.GetSubNegotiationCommand(dataNextByte, encoding.GetBytes("\0XTERM"));
+                            SendSubNegotiation(dataNextByte, encoding.GetBytes("\0XTERM"));
                         else if (TelnetHelper.GetOptionDescription(dataNextByte) == "Terminal Speed")
-                            SubNegotiationCommand = TelnetHelper.GetSubNegotiationCommand(dataNextByte, encoding.GetBytes("\038400,38400") );
+                            SendSubNegotiation(dataNextByte, encoding.GetBytes("\038400,38400"));
                         else if (TelnetHelper.GetOptionDescription(dataNextByte) == "X Display Location")
-                            SubNegotiationCommand = TelnetHelper.GetSubNegotiationCommand(dataNextByte, encoding.GetBytes("\x00\x05\x00\x18"));
+                            SendCommand(TelnetHelper.WONT, 0x23); // Won't display X Location
                         else if (TelnetHelper.GetOptionDescription(dataNextByte) == "New Environment Option")
-                            SubNegotiationCommand = TelnetHelper.GetSubNegotiationCommand(dataNextByte, encoding.GetBytes("\0"));
-                        else
-                            SubNegotiationCommand = null;
-
-                        if (SubNegotiationCommand != null)
-                            client.SendData(SubNegotiationCommand);
-
+                            SendSubNegotiation(dataNextByte, encoding.GetBytes("\0"));
                     }
                     else if (dataByte == TelnetHelper.DONT)
-                    {
-                    }
+                    {}
                     else if (dataByte == TelnetHelper.IAC)
+                    {}
+                    else if (dataByte == TelnetHelper.ESC)
                     {
+                        int endLocation = (data.ToString()).IndexOf("\0", i);
 
+                        // The next packet will contain this, but for now throw exception
+                        if (endLocation == -1)
+                        {
+                            throw new Exception("Check Next Packet");
+                        }
+
+                        byte[] dataLine = new byte[endLocation - i];
+
+                        Array.Copy(data, dataLine, dataLine.Length);
+
+                        Console.Write(dataLine);
                     }
                     else
                     {
@@ -148,9 +187,9 @@ namespace Nethack_Online_GUI
         }
 
         // Possible needs to be rewritten
-        public void DisplayReceivedData(byte[] data)
+        public void DisplayReceivedData(byte[] data, int dataLength)
         {
-            for (int i = 0; i < data.Length; ++i)
+            for (int i = 0; i < dataLength; ++i)
             {
                 byte dataByte = data[i];
 
@@ -170,6 +209,10 @@ namespace Nethack_Online_GUI
                         Console.Write("DON'T: ");
                     else if (dataByte == TelnetHelper.IAC)
                         Console.Write("\nIAC  ");
+                    else if (dataByte == TelnetHelper.ESC)
+                    {
+                        Console.Write("\nESC: ");
+                    }
                     else // Get Option Description of Command
                         Console.Write(TelnetHelper.GetOptionDescription(dataByte) + " "); //dataByte.ToString("X")
                 }

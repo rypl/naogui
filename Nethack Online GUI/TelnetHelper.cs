@@ -5,6 +5,7 @@ namespace Nethack_Online_GUI
 {
     static class TelnetHelper
     {
+        // Telnet Negotiation Commands
         public const int SE = 0xF0; // subnegotiation end
         public const int SB = 0xFA; // subnegotiation start
         public const int WILL = 0xFB;
@@ -12,6 +13,9 @@ namespace Nethack_Online_GUI
         public const int DO   = 0xFD;
         public const int DONT = 0xFE;
         public const int IAC  = 0xFF;
+
+        // Telnet Data Commands
+        public const int ESC  = 0x33;
 
         static string[] TelnetOptions =
         {
@@ -75,6 +79,18 @@ namespace Nethack_Online_GUI
             "SEND-URL",
             "FORWARD_X"                 // 49
         };
+
+        // Get the value of the option description
+        public static int GetOptionCode(string optionDescription)
+        {
+            for (int i = 0; i < 50; ++i)
+            {
+                if (TelnetOptions[i] == optionDescription)
+                    return i;
+            }
+
+            return -1;
+        }
 
         // Get the description of option
         public static string GetOptionDescription(int option)
