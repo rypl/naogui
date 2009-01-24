@@ -51,7 +51,7 @@ namespace Nethack_Online_GUI
             this.Messages.Multiline = true;
             this.Messages.Name = "Messages";
             this.Messages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.Messages.Size = new System.Drawing.Size(1292, 90);
+            this.Messages.Size = new System.Drawing.Size(1280, 90);
             this.Messages.TabIndex = 0;
             // 
             // Status
@@ -60,21 +60,21 @@ namespace Nethack_Online_GUI
             this.Status.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.Status.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.Status.Font = new System.Drawing.Font("Arial", 12F);
-            this.Status.Location = new System.Drawing.Point(5, 517);
+            this.Status.Location = new System.Drawing.Point(5, 481);
             this.Status.Multiline = true;
             this.Status.Name = "Status";
-            this.Status.Size = new System.Drawing.Size(1292, 45);
+            this.Status.Size = new System.Drawing.Size(1280, 45);
             this.Status.TabIndex = 1;
             // 
             // panel1
             // 
             this.panel1.AutoScroll = true;
             this.panel1.AutoScrollMinSize = new System.Drawing.Size(1280, 384);
-            this.panel1.BackColor = System.Drawing.Color.DarkSlateGray;
+            this.panel1.BackColor = System.Drawing.Color.DimGray;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(5, 95);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1292, 422);
+            this.panel1.Size = new System.Drawing.Size(1280, 386);
             this.panel1.TabIndex = 2;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
@@ -83,7 +83,7 @@ namespace Nethack_Online_GUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1302, 567);
+            this.ClientSize = new System.Drawing.Size(1290, 531);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.Status);
             this.Controls.Add(this.Messages);

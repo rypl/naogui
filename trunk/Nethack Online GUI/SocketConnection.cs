@@ -7,11 +7,12 @@ using System.Net.Sockets;
 class SocketConnection
 {
     Socket socket;
-    bool connected;
+    byte[] bufferReceived;
+    int bytesReceived;
 
     public SocketConnection()
     {
-        connected = false;
+        //connected = false;
     }
 
     public SocketConnection(string host, int port)
@@ -21,34 +22,39 @@ class SocketConnection
 
     public bool Connect(string host, int port)
     {
-        connected = false;
+        //connected = false;
 
         try
         {
-            connected = true;
+            //connected = true;
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            bufferReceived = new byte[socket.ReceiveBufferSize];
+
             socket.Connect(host, port);
         }
 
         catch (Exception e)
         {
-            connected = false;
+            //connected = false;
             Console.WriteLine("Error: " + e.ToString());
         }
 
-        return connected;
+        //return connected;
+        return socket.Connected;
     }
 
     public bool Disconnect()
     {
-        if (connected == true)
+        if (socket.Connected == true)
         {
             socket.Close();
 
-            connected = false;
+            //connected = false;
         }
 
-        return connected;
+        //return connected;
+
+        return socket.Connected;
     }
 
     public bool SendData(byte[] data)
@@ -68,17 +74,25 @@ class SocketConnection
         return true;
     }
 
+    public int ReceiveData()
+    {
+        bytesReceived = socket.Receive(bufferReceived);
+        
+        return bytesReceived;
+    }
+
     public byte[] GetData()
     {
-        byte[] buffer = new byte[socket.ReceiveBufferSize];
+        return bufferReceived;
+    }
 
-        socket.Receive(buffer);
-
-        return buffer;
+    public int getBytesReceived()
+    {
+        return bytesReceived;
     }
 
     public bool isConnected()
     {
-        return connected;
+        return socket.Connected;
     }
 }
