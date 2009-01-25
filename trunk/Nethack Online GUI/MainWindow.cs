@@ -12,13 +12,11 @@ namespace Nethack_Online_GUI
     {
         NethackController nhControl;
 
-        public MainWindow()
+        public MainWindow(NethackController nhControl)
         {
             InitializeComponent();
-            
-            nhControl = new NethackController();
 
-            nhControl.Connect("nethack.alt.org", 23);
+            this.nhControl = nhControl;
         }
 
         override protected void OnPaint(PaintEventArgs e)
@@ -26,9 +24,27 @@ namespace Nethack_Online_GUI
             
         }
 
+        // Game Panel
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
             nhControl.Paint(e.Graphics);
+
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            About myAbout = new About();
+            myAbout.Visible = true;
+        }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void connectButton_Click(object sender, EventArgs e)
+        {
+            nhControl.Connect("username", "password", "nethack.alt.org", 23);
         }
     }
 }

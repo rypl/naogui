@@ -1,15 +1,37 @@
 using System;
 using System.Windows.Forms;
-using Nethack_Online_GUI;
 using System.Drawing;
 
-class Controller
+namespace Nethack_Online_GUI
 {
-    static void Main()
+    class Controller
     {
-        Form MainWindow = new MainWindow();
+        static void Main()
+        {
+            NethackController nhControl;
+            Form myLoginWindow;
+            Form myMainWindow;
 
-        Application.EnableVisualStyles();
-        Application.Run(MainWindow);
+            nhControl = new NethackController();
+            //myLoginWindow = new Login(nhControl);
+
+            //Application.EnableVisualStyles();
+            //Application.Run(myLoginWindow);
+
+            //if (nhControl.Connected())
+            //{
+            //    myMainWindow = new MainWindow(nhControl);
+
+            //    Application.Run(myMainWindow);
+            //}
+
+            //else
+            //{
+            //    MessageBox.Show("Error", "Log-in Error");
+            //}
+
+            myMainWindow = new MainWindow(nhControl);
+            Application.Run(myMainWindow);
+        }
     }
 }

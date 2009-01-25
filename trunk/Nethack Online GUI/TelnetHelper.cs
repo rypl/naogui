@@ -6,16 +6,16 @@ namespace Nethack_Online_GUI
     static class TelnetHelper
     {
         // Telnet Negotiation Commands
-        public const int SE = 0xF0; // subnegotiation end
-        public const int SB = 0xFA; // subnegotiation start
-        public const int WILL = 0xFB;
-        public const int WONT = 0xFC;
-        public const int DO   = 0xFD;
-        public const int DONT = 0xFE;
-        public const int IAC  = 0xFF;
+        public const byte SE = 0xF0; // subnegotiation end
+        public const byte SB = 0xFA; // subnegotiation start
+        public const byte WILL = 0xFB;
+        public const byte WONT = 0xFC;
+        public const byte DO = 0xFD;
+        public const byte DONT = 0xFE;
+        public const byte IAC = 0xFF;
 
         // Telnet Data Commands
-        public const int ESC  = 0x33;
+        public const byte ESC  = 0x1B;
 
         static string[] TelnetOptions =
         {
