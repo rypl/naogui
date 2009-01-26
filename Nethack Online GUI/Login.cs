@@ -10,8 +10,6 @@ namespace Nethack_Online_GUI
 {
     public partial class Login : Form
     {
-        NethackController nhControl;
-
         public Login(NethackController nhControl)
         {
             InitializeComponent();
@@ -28,12 +26,12 @@ namespace Nethack_Online_GUI
             }
 
             // Good data, lets connect...
-            if (false)
-            {
-                nhControl.Connect(usernameBox.Text, passwordBox.Text, "nethack.alt.org", 23);
+            //if (false)
+            //{
+            //    nhControl.Connect(usernameBox.Text, passwordBox.Text, "nethack.alt.org", 23);
 
-                this.Close(); // We're done with this form...                
-            }
+            //    this.Close(); // We're done with this form...                
+            //}
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
