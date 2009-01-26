@@ -9,7 +9,7 @@ namespace Nethack_Online_GUI
         static void Main()
         {
             NethackController nhControl;
-            Form myLoginWindow;
+            //Form myLoginWindow;
             Form myMainWindow;
 
             nhControl = new NethackController();

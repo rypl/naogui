@@ -83,7 +83,7 @@ namespace Nethack_Online_GUI
             this.gamePanel.Name = "gamePanel";
             this.gamePanel.Size = new System.Drawing.Size(1284, 389);
             this.gamePanel.TabIndex = 2;
-            this.gamePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            this.gamePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.gamePanel_Paint);
             // 
             // mainMenuStrip
             // 
@@ -161,7 +161,6 @@ namespace Nethack_Online_GUI
             this.mainMenuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion

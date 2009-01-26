@@ -85,8 +85,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SocketConnection.cs" />
+    <Compile Include="TCPConnection.cs" />
     <Compile Include="TelnetHelper.cs" />
+    <Compile Include="TerminalCell.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

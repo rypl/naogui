@@ -10,23 +10,39 @@ namespace Nethack_Online_GUI
     public class NethackController
     {
         public const int NUM_TILES_COL = 40; // number of tiles across tileset
-        public const int TERMINAL_WIDTH = 80; // terminal width in characters
-        public const int TERMINAL_HEIGHT = 24; // terminal height in characters
+        public const int TERMINAL_COLS = 80; // terminal width in characters
+        public const int TERMINAL_ROWS = 24; // terminal height in characters
         public const int TILE_SIZE = 16; // n x n tile
 
-        SocketConnection client;
+        TCPConnection client;
         ASCIIEncoding encoding;
         Bitmap tileSet;
         bool isConnected;
         Font font;
         
+        TerminalCell[,] termCells;
+
         public NethackController()
         {
             tileSet = new Bitmap(@"..\..\nhtiles.bmp");
-            client = new SocketConnection();
+            client = new TCPConnection();
             encoding = new ASCIIEncoding();
             isConnected = false;
             font = new Font(FontFamily.GenericMonospace, 16, GraphicsUnit.Pixel);
+
+            termCells = new TerminalCell[TERMINAL_COLS, TERMINAL_ROWS];
+
+            //for (int i = 0; i < TERMINAL_COLS; ++i)
+            //    termCells[i] = new TerminalCell();
+
+            //for (int i = 0; i < TERMINAL_COLS; ++i)
+            //    for (int j = 0; j < TERMINAL_ROWS; ++j)
+            //        termCells[i][j] = new TerminalCell();
+        }
+
+        public TerminalCell[,] getTermCells()
+        {
+            return termCells;
         }
 
         public void Paint(Graphics graph)
@@ -68,24 +84,39 @@ namespace Nethack_Online_GUI
         // Connect to server and send initial responses
         public void Connect(string username, string password, string host, int port)
         {
+            if (client.Connected)
+            {
+                throw new Exception("Already Connected");
+            }
+            
             client.Connect(host,port);
 
-            int dataLength = client.ReceiveData();
-            byte[] dataBytes = client.GetData();
-            
             // Initial things our client will do /////////////////////////////////////////
             SendCommand(TelnetHelper.WILL, 0x03);   // WILL Supress Go Ahead
-            SendCommand(TelnetHelper.DO,   0x03);   // DO Suppress Go Ahead
+            SendCommand(TelnetHelper.DO, 0x03);   // DO Suppress Go Ahead
             SendCommand(TelnetHelper.WILL, 0x1F);   // WILL Negotiate about window size 
             SendCommand(TelnetHelper.WILL, 0x20);   // WILL Terminal Speed 
             SendCommand(TelnetHelper.WILL, 0x18);   // WILL Terminal Type 
             SendCommand(TelnetHelper.WILL, 0x27);   // WILL New Enviroment Option
             SendCommand(TelnetHelper.WILL, 0x01);   // WILL Echo
             //////////////////////////////////////////////////////////////////////////////
-            
-            // Initial data processing
-            while (dataLength > 0)
+
+            Console.WriteLine("Connected!");
+        }
+
+        public void PollTelnetServer()
+        {
+            if (!client.Connected)
+                return;
+
+            int dataLength;
+            byte[] dataBytes;
+
+            while (client.DataAvailable)
             {
+                dataLength = client.ReceiveData();
+                dataBytes = client.GetData();
+
                 for (int i = 0; i < dataLength; ++i)
                 {
 
@@ -128,35 +159,33 @@ namespace Nethack_Online_GUI
                         }
 
                         // Copy the data over
-                        byte[] terminalLine = new byte[endOfLine - i - (endOfCommand-i)];
+                        byte[] terminalLine = new byte[endOfLine - i - (endOfCommand - i)];
                         byte[] terminalCommand = new byte[endOfCommand - i > 0 ? endOfCommand - i - 1 : 0];
 
                         // Terminal line
-                        for (int j = endOfCommand+1; j < endOfLine; ++j)
+                        for (int j = endOfCommand + 1; j < endOfLine; ++j)
                             terminalLine[j - endOfCommand] = dataBytes[j];
 
                         // Terminal command
-                        for (int j = i+1; j < endOfCommand; ++j)
-                            terminalCommand[j- ( i+1)] = dataBytes[j];
+                        for (int j = i + 1; j < endOfCommand; ++j)
+                            terminalCommand[j - (i + 1)] = dataBytes[j];
 
                         Console.WriteLine("[" + encoding.GetString(terminalCommand) + "]" + encoding.GetString(terminalLine));
 
                         i += endOfLine - i - 1;
                     }
-
-                    else
-                    {
-                        //Console.Write(dataBytes[i].ToString("X") + " ");
-                    }
                 }
 
                 Console.WriteLine();
-
-                dataLength = client.ReceiveData();
-                dataBytes = client.GetData();
             }
+        }
 
-
+        public bool DataAvailable
+        {
+            get
+            {
+                return client.DataAvailable;
+            }
         }
 
         public bool Connected()
