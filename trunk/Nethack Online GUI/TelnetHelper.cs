@@ -99,7 +99,9 @@ namespace Nethack_Online_GUI
         // Get the description of option
         public static string GetOptionDescription(int option)
         {
-            if (option >= 50 && option <= 137)
+            if ( option >= 0 && option <= 49)
+                return TelnetOptions[option];
+            else if (option >= 50 && option <= 137)
                 return "Unassigned";
             else if (option == 138)
                 return "TELOPT PRAGMA LOGON";
@@ -109,8 +111,6 @@ namespace Nethack_Online_GUI
                 return "TELOPT PRAGMA HEARTBEAT";
             else if (option == 255)
                 return "Extended-Options-List";
-            else if (option <= 49 && option >= 0)
-                return TelnetOptions[option];
             else
                 return "ERROR (" + option.ToString("X") + ")";
         }

@@ -43,29 +43,35 @@ namespace Nethack_Online_GUI
         }
 
         public void Paint(Graphics graph)
-        {
-            //graph.FillRectangle(new SolidBrush(Color.Black), new Rectangle(10, 110, 1280, 384)); //Dungeon Area
+        {           
             graph.FillRectangle(new SolidBrush(Color.Black), new Rectangle(0, 0, 1280, 384)); //Dungeon Area
 
-            //drawTile(0, 0, graph);
-            drawTile(0, graph);
             drawText("hello world", 0, graph);
             drawText("Line 2", 1, graph);
             drawText("Line 23", 23, graph);
+
+            drawTile(0, new Location(0, 0), graph);
+            
+            foreach (TerminalCell cell in termCells)
+            {
+                drawTile((new Random()).Next(512), cell.term, graph);
+            }
+
             graph.Dispose();
         }
 
-        public void drawTile(int col, int row, Graphics graph)
+        public void drawTile(Location tile, Location term, Graphics graph)
         {
-            graph.DrawImage(tileSet, new Rectangle(0, 0, TILE_SIZE, TILE_SIZE), new Rectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE), GraphicsUnit.Pixel);
+            //graph.DrawImage(tileSet, new Rectangle(0, 0, TILE_SIZE, TILE_SIZE), new Rectangle(tile.col * TILE_SIZE, tile.row * TILE_SIZE, TILE_SIZE, TILE_SIZE), GraphicsUnit.Pixel);
+            graph.DrawImage(tileSet, new Rectangle(term.col*TILE_SIZE, term.row*TILE_SIZE, TILE_SIZE, TILE_SIZE), new Rectangle(tile.col * TILE_SIZE, tile.row * TILE_SIZE, TILE_SIZE, TILE_SIZE), GraphicsUnit.Pixel);
         }
 
-        public void drawTile(int tileNum, Graphics graph)
+        public void drawTile(int tileNum, Location term, Graphics graph)
         {
             int row = tileNum / NUM_TILES_COL;
             int col = tileNum - (row * NUM_TILES_COL);
 
-            drawTile(col, row, graph);
+            drawTile(new Location(col, row), term, graph);
         }
 
         public void drawText(string text, int row, Graphics graph)
@@ -116,65 +122,78 @@ namespace Nethack_Online_GUI
 
                 for (int i = 0; i < dataLength; ++i)
                 {
-
-                    // Interpret As Command
-                    if (dataBytes[i] == TelnetHelper.IAC)
+                    switch (dataBytes[i])
                     {
-                        // IAC Negotiation Option
-                        byte negotiation = dataBytes[i + 1];
-                        byte option = dataBytes[i + 2];
-
-                        if (negotiation == TelnetHelper.DO)
-                        {
-                            if (TelnetHelper.GetOptionDescription(option) == "Terminal Type")
-                                SendSubNegotiation(option, encoding.GetBytes("\0XTERM"));
-                            else if (TelnetHelper.GetOptionDescription(option) == "Terminal Speed")
-                                SendSubNegotiation(option, encoding.GetBytes("\038400,38400"));
-                            else if (TelnetHelper.GetOptionDescription(option) == "X Display Location")
-                                SendCommand(TelnetHelper.WONT, 0x23); // Won't display X Location
-                            else if (TelnetHelper.GetOptionDescription(option) == "New Environment Option")
-                                SendSubNegotiation(option, encoding.GetBytes("\0"));
-                        }
-
-                        i += 2;
-                    }
-
-                    // Terminal Command
-                    else if (dataBytes[i] == TelnetHelper.ESC)
-                    {
-                        // Find end of the command
-                        int endOfLine;
-                        int endOfCommand = i;
-
-                        for (endOfLine = i; endOfLine < dataLength; ++endOfLine)
-                        {
-                            if (dataBytes[endOfCommand] != 0x20 && dataBytes[endOfLine] == 0x20) // space
-                                endOfCommand = endOfLine;
-
-                            if (dataBytes[endOfLine] == 0)
-                                break;
-                        }
-
-                        // Copy the data over
-                        byte[] terminalLine = new byte[endOfLine - i - (endOfCommand - i)];
-                        byte[] terminalCommand = new byte[endOfCommand - i > 0 ? endOfCommand - i - 1 : 0];
-
-                        // Terminal line
-                        for (int j = endOfCommand + 1; j < endOfLine; ++j)
-                            terminalLine[j - endOfCommand] = dataBytes[j];
-
-                        // Terminal command
-                        for (int j = i + 1; j < endOfCommand; ++j)
-                            terminalCommand[j - (i + 1)] = dataBytes[j];
-
-                        Console.WriteLine("[" + encoding.GetString(terminalCommand) + "]" + encoding.GetString(terminalLine));
-
-                        i += endOfLine - i - 1;
+                        // Interpret As Command
+                        case TelnetHelper.IAC:
+                            i = ProcessIAC(dataBytes, dataLength, i);
+                            break;
+                        // Terminal Command
+                        case TelnetHelper.ESC:
+                            i = ProcessESC(dataBytes, dataLength, i);
+                            break;
                     }
                 }
 
                 Console.WriteLine();
             }
+        }
+
+        public int ProcessIAC(byte[] dataBytes, int dataLength, int i)
+        {
+            // IAC Negotiation Option
+            byte negotiation = dataBytes[i + 1];
+            byte option = dataBytes[i + 2];
+
+            if (negotiation == TelnetHelper.DO)
+            {
+                if (TelnetHelper.GetOptionDescription(option) == "Terminal Type")
+                    SendSubNegotiation(option, encoding.GetBytes("\0XTERM"));
+                else if (TelnetHelper.GetOptionDescription(option) == "Terminal Speed")
+                    SendSubNegotiation(option, encoding.GetBytes("\038400,38400"));
+                else if (TelnetHelper.GetOptionDescription(option) == "X Display Location")
+                    SendCommand(TelnetHelper.WONT, 0x23); // Won't display X Location
+                else if (TelnetHelper.GetOptionDescription(option) == "New Environment Option")
+                    SendSubNegotiation(option, encoding.GetBytes("\0"));
+            }
+
+            i += 2;
+
+            return i;
+        }
+
+        public int ProcessESC(byte[] dataBytes, int dataLength, int i)
+        {
+            // Find end of the command
+            int endOfLine;
+            int endOfCommand = i;
+
+            for (endOfLine = i; endOfLine < dataLength; ++endOfLine)
+            {
+                if (dataBytes[endOfCommand] != 0x20 && dataBytes[endOfLine] == 0x20) // space
+                    endOfCommand = endOfLine;
+
+                if (dataBytes[endOfLine] == 0)
+                    break;
+            }
+
+            // Copy the data over
+            byte[] terminalLine = new byte[endOfLine - i - (endOfCommand - i)];
+            byte[] terminalCommand = new byte[endOfCommand - i > 0 ? endOfCommand - i - 1 : 0];
+
+            // Terminal line
+            for (int j = endOfCommand + 1; j < endOfLine; ++j)
+                terminalLine[j - endOfCommand] = dataBytes[j];
+
+            // Terminal command
+            for (int j = i + 1; j < endOfCommand; ++j)
+                terminalCommand[j - (i + 1)] = dataBytes[j];
+
+            Console.WriteLine("[" + encoding.GetString(terminalCommand) + "]" + encoding.GetString(terminalLine));
+
+            i += endOfLine - i - 1;
+
+            return i;
         }
 
         public bool DataAvailable

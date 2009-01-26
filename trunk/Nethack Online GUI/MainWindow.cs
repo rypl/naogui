@@ -26,7 +26,6 @@ namespace Nethack_Online_GUI
 
         override protected void OnPaint(PaintEventArgs e)
         {
-            TerminalCell[,] termCells = nhControl.getTermCells();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -55,7 +54,8 @@ namespace Nethack_Online_GUI
         // Game Panel
         private void gamePanel_Paint(object sender, PaintEventArgs e)
         {
-            nhControl.Paint(e.Graphics);
+            Graphics graph = e.Graphics;
+            nhControl.Paint(graph);
         }
 
         private void PollTelnetServer()
