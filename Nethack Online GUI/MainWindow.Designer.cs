@@ -58,7 +58,7 @@ namespace Nethack_Online_GUI
             this.Messages.Multiline = true;
             this.Messages.Name = "Messages";
             this.Messages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.Messages.Size = new System.Drawing.Size(1284, 90);
+            this.Messages.Size = new System.Drawing.Size(1280, 90);
             this.Messages.TabIndex = 0;
             // 
             // Status
@@ -67,10 +67,10 @@ namespace Nethack_Online_GUI
             this.Status.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.Status.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.Status.Font = new System.Drawing.Font("Arial", 12F);
-            this.Status.Location = new System.Drawing.Point(1, 503);
+            this.Status.Location = new System.Drawing.Point(1, 499);
             this.Status.Multiline = true;
             this.Status.Name = "Status";
-            this.Status.Size = new System.Drawing.Size(1284, 45);
+            this.Status.Size = new System.Drawing.Size(1280, 45);
             this.Status.TabIndex = 1;
             // 
             // gamePanel
@@ -81,7 +81,7 @@ namespace Nethack_Online_GUI
             this.gamePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gamePanel.Location = new System.Drawing.Point(1, 114);
             this.gamePanel.Name = "gamePanel";
-            this.gamePanel.Size = new System.Drawing.Size(1284, 389);
+            this.gamePanel.Size = new System.Drawing.Size(1280, 385);
             this.gamePanel.TabIndex = 2;
             this.gamePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.gamePanel_Paint);
             // 
@@ -96,7 +96,7 @@ namespace Nethack_Online_GUI
             this.mainMenuStrip.Location = new System.Drawing.Point(1, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
             this.mainMenuStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.mainMenuStrip.Size = new System.Drawing.Size(1284, 24);
+            this.mainMenuStrip.Size = new System.Drawing.Size(1280, 24);
             this.mainMenuStrip.TabIndex = 3;
             this.mainMenuStrip.Text = "mainMenuStrip";
             // 
@@ -111,7 +111,7 @@ namespace Nethack_Online_GUI
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -145,7 +145,7 @@ namespace Nethack_Online_GUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1286, 549);
+            this.ClientSize = new System.Drawing.Size(1282, 545);
             this.Controls.Add(this.connectButton);
             this.Controls.Add(this.gamePanel);
             this.Controls.Add(this.Status);
@@ -161,6 +161,7 @@ namespace Nethack_Online_GUI
             this.mainMenuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion

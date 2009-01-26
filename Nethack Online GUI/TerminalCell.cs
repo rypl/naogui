@@ -23,5 +23,13 @@ namespace Nethack_Online_GUI
             fontStyle = FontStyle.Regular;
             character = ' ';
         }
+
+        public Location term
+        {
+            get
+            {
+                return new Location(col, row);
+            }
+        }
     }
 }
