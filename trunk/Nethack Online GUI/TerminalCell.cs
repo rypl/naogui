@@ -14,12 +14,13 @@ namespace Nethack_Online_GUI
         public FontStyle fontStyle;
         public char character;
 
-        public TerminalCell()
+        public TerminalCell(int col, int row)
         {
-            row = -1;
-            col = -1;
+            this.col = col;
+            this.row = row;
+
             color = Color.White;
-            fontStyle = new FontStyle();
+            fontStyle = FontStyle.Regular;
             character = ' ';
         }
     }

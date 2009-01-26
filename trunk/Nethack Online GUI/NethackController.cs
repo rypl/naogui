@@ -32,12 +32,9 @@ namespace Nethack_Online_GUI
 
             termCells = new TerminalCell[TERMINAL_COLS, TERMINAL_ROWS];
 
-            //for (int i = 0; i < TERMINAL_COLS; ++i)
-            //    termCells[i] = new TerminalCell();
-
-            //for (int i = 0; i < TERMINAL_COLS; ++i)
-            //    for (int j = 0; j < TERMINAL_ROWS; ++j)
-            //        termCells[i][j] = new TerminalCell();
+            for (int r = 0; r < TERMINAL_ROWS; ++r)
+                for (int c = 0; c < TERMINAL_COLS; ++c)
+                    termCells[c,r] = new TerminalCell(c,r);
         }
 
         public TerminalCell[,] getTermCells()
