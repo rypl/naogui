@@ -9,10 +9,10 @@ namespace Nethack_Online_GUI
 {
     public class NethackController
     {
-        const int NUM_TILES_COL = 40; // number of tiles across tileset
-        const int TERMINAL_WIDTH = 80; // terminal width in characters
-        const int TERMINAL_HEIGHT = 24; // terminal height in characters
-        const int TILE_SIZE = 16; // n x n tile
+        public const int NUM_TILES_COL = 40; // number of tiles across tileset
+        public const int TERMINAL_WIDTH = 80; // terminal width in characters
+        public const int TERMINAL_HEIGHT = 24; // terminal height in characters
+        public const int TILE_SIZE = 16; // n x n tile
 
         SocketConnection client;
         ASCIIEncoding encoding;
@@ -57,10 +57,10 @@ namespace Nethack_Online_GUI
 
         public void drawText(string text, int row, Graphics graph)
         {
-            graph.DrawString(text, font, Brushes.White, 0, row * TILE_SIZE);
+            drawText(text, 0, row, graph);
         }
 
-        public void drawText(int col, int row, Graphics graph)
+        public void drawText(string text, int col, int row, Graphics graph)
         {
             graph.DrawString(text, font, Brushes.White, col * TILE_SIZE, row * TILE_SIZE);
         }
@@ -82,7 +82,8 @@ namespace Nethack_Online_GUI
             SendCommand(TelnetHelper.WILL, 0x27);   // WILL New Enviroment Option
             SendCommand(TelnetHelper.WILL, 0x01);   // WILL Echo
             //////////////////////////////////////////////////////////////////////////////
-
+            
+            // Initial data processing
             while (dataLength > 0)
             {
                 for (int i = 0; i < dataLength; ++i)
@@ -114,20 +115,33 @@ namespace Nethack_Online_GUI
                     else if (dataBytes[i] == TelnetHelper.ESC)
                     {
                         // Find end of the command
-                        int endLocation;
-                        for (endLocation = i; endLocation < dataLength; ++endLocation)
-                            if (dataBytes[endLocation] == 0)
+                        int endOfLine;
+                        int endOfCommand = i;
+
+                        for (endOfLine = i; endOfLine < dataLength; ++endOfLine)
+                        {
+                            if (dataBytes[endOfCommand] != 0x20 && dataBytes[endOfLine] == 0x20) // space
+                                endOfCommand = endOfLine;
+
+                            if (dataBytes[endOfLine] == 0)
                                 break;
+                        }
 
                         // Copy the data over
-                        byte[] terminalData = new byte[endLocation - i];
-                        for (int j = 1; j < endLocation - i; ++j)
-                            terminalData[j] = dataBytes[j + i];
-                        
+                        byte[] terminalLine = new byte[endOfLine - i - (endOfCommand-i)];
+                        byte[] terminalCommand = new byte[endOfCommand - i > 0 ? endOfCommand - i - 1 : 0];
 
-                        Console.WriteLine(encoding.GetString(terminalData));
+                        // Terminal line
+                        for (int j = endOfCommand+1; j < endOfLine; ++j)
+                            terminalLine[j - endOfCommand] = dataBytes[j];
 
-                        i += endLocation - i - 1;
+                        // Terminal command
+                        for (int j = i+1; j < endOfCommand; ++j)
+                            terminalCommand[j- ( i+1)] = dataBytes[j];
+
+                        Console.WriteLine("[" + encoding.GetString(terminalCommand) + "]" + encoding.GetString(terminalLine));
+
+                        i += endOfLine - i - 1;
                     }
 
                     else
