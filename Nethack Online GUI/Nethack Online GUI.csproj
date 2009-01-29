@@ -80,15 +80,18 @@
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="NethackController.cs" />
+    <Compile Include="NetHackController.cs" />
+    <Compile Include="NetHackHelper.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TCPConnection.cs" />
+    <Compile Include="TelnetController.cs" />
     <Compile Include="TelnetHelper.cs" />
     <Compile Include="TerminalCell.cs" />
+    <Compile Include="WindowController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

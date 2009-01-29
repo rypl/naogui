@@ -8,11 +8,11 @@ namespace Nethack_Online_GUI
     {
         static void Main()
         {
-            NethackController nhControl;
+            //NethackController nhControl;
             //Form myLoginWindow;
             Form myMainWindow;
 
-            nhControl = new NethackController();
+            //nhControl = new NethackController();
             //myLoginWindow = new Login(nhControl);
 
             //Application.EnableVisualStyles();
@@ -30,7 +30,7 @@ namespace Nethack_Online_GUI
             //    MessageBox.Show("Error", "Log-in Error");
             //}
 
-            myMainWindow = new MainWindow(nhControl);
+            myMainWindow = new MainWindow();
             Application.Run(myMainWindow);
         }
     }
