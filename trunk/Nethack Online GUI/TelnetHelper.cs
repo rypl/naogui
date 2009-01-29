@@ -5,10 +5,6 @@ namespace Nethack_Online_GUI
 {
     static class TelnetHelper
     {
-        // <summary>
-        // Now with more terminal support!
-        // </summary>
-
         // Telnet Negotiation Commands
         public const byte SE = 0xF0; // subnegotiation end
         public const byte SB = 0xFA; // subnegotiation start
@@ -17,6 +13,9 @@ namespace Nethack_Online_GUI
         public const byte DO = 0xFD;
         public const byte DONT = 0xFE;
         public const byte IAC = 0xFF;
+
+        public const int TERMINAL_COLS = 80; // terminal width in characters
+        public const int TERMINAL_ROWS = 24; // terminal height in characters
 
         // Telnet Data Commands
         public const byte ESC  = 0x1B;

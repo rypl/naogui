@@ -13,29 +13,26 @@ class TCPConnection
 
     public TCPConnection()
     {
+        tcpClient = new TcpClient();
+        bufferReceived = new byte[8192];
+        bytesReceived = 0;
     }
 
     public TCPConnection(string host, int port)
     {
+        tcpClient = new TcpClient();
+        bufferReceived = new byte[8192];
+        bytesReceived = 0;
+
         Connect(host, port);
     }
 
     public bool Connect(string host, int port)
     {
-        try
-        {
-            tcpClient = new TcpClient(host, port);
-            bufferReceived = new byte[8192];
-            bytesReceived = 0;
+        tcpClient.Connect(host, port);
 
-            networkStream = tcpClient.GetStream();
-        }
-
-        catch (Exception e)
-        {
-            Console.WriteLine("Error: " + e.ToString());
-        }
-
+        networkStream = tcpClient.GetStream();
+        
         return tcpClient.Connected;
     }
 
@@ -78,7 +75,7 @@ class TCPConnection
     {
         get
         {
-            return (tcpClient == null) ? false : tcpClient.Connected;
+            return tcpClient.Connected;
         }
     }
 

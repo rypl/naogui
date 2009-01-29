@@ -6,22 +6,29 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Threading;
+using System.Text;
 
 namespace Nethack_Online_GUI
 {
     public partial class MainWindow : Form
     {
-        NethackController nhControl;
         Thread socketThread;
-        static Mutex myMutex;
+        TelnetController tc;
+        WindowController wc;
+        NetHackController nc;
+        ASCIIEncoding encoder;
 
-        public MainWindow(NethackController nhControl)
+        public MainWindow()
         {
             InitializeComponent();
 
-            this.nhControl = nhControl;
+            nc = new NetHackController();
 
-            myMutex = new Mutex();
+            tc = new TelnetController();
+
+            wc = new WindowController(nc);
+
+            encoder = new ASCIIEncoding();
         }
 
         override protected void OnPaint(PaintEventArgs e)
@@ -36,15 +43,21 @@ namespace Nethack_Online_GUI
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            tc.Disconnect();
+
             this.Close();
         }
 
         private void connectButton_Click(object sender, EventArgs e)
         {
-            nhControl.Connect("username", "password", "nethack.alt.org", 23);
+            if (tc.Connected)
+            {
+                MessageBox.Show("Error", "Already Connected");
 
-            if (socketThread != null)
-                throw new Exception("socketThread already exists");
+                return;
+            }
+
+            //tc.Connect("username", "password", "nethack.alt.org", 23);
 
             socketThread = new Thread(PollTelnetServer);
 
@@ -55,19 +68,50 @@ namespace Nethack_Online_GUI
         private void gamePanel_Paint(object sender, PaintEventArgs e)
         {
             Graphics graph = e.Graphics;
-            nhControl.Paint(graph);
+
+            wc.Paint(graph);
+
+            graph.Dispose();
         }
 
         private void PollTelnetServer()
         {
-            Monitor.TryEnter(this);
-            if (nhControl.DataAvailable)
+            List<TerminalCell> updateList = new List<TerminalCell>();
+            List<TerminalCell> ret;
+            // injecting data
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[7d"), encoder.GetBytes("## Games on this server are recorded for in-progress viewing and playback!"));
+            updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[9d"), encoder.GetBytes("Not logged in."));
+            updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[11d"), encoder.GetBytes(" l) Login"));
+            updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[12d"), encoder.GetBytes(" r) Register new user"));
+            updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[13d"), encoder.GetBytes(" w) Watch games in progress"));
+            updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[14d"), encoder.GetBytes(" q) Quit"));
+            updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[18d"), encoder.GetBytes(" => "));
+            updateList.AddRange(ret);
+
+            wc.updateRender(updateList);
+
+            gamePanel.Invalidate();
+
+
+            // Normally how we do it
+            /*
+            while (tc.Connected)
             {
-                myMutex.GetAccessControl();
-                nhControl.PollTelnetServer();
-                myMutex.ReleaseMutex();
+                tc.PollServer();                
             }
-            Monitor.Exit(this);
+            */
         }
     }
 }

@@ -13,6 +13,8 @@ namespace Nethack_Online_GUI
         public Color color;
         public FontStyle fontStyle;
         public char character;
+        public bool isTile;
+        public int tileNum;
 
         public TerminalCell(int col, int row)
         {
@@ -21,7 +23,34 @@ namespace Nethack_Online_GUI
 
             color = Color.White;
             fontStyle = FontStyle.Regular;
-            character = ' ';
+            character = (char)0;
+            isTile = true;
+            tileNum = 1131;
+        }
+
+        public TerminalCell(int col, int row, char character)
+        {
+            this.col = col;
+            this.row = row;
+
+            color = Color.White;
+            fontStyle = FontStyle.Regular;
+            this.character = character;
+            this.isTile = false;
+            this.tileNum = -1;
+        }
+
+        public TerminalCell(int col, int row, int tileNum)
+        {
+            this.col = col;
+            this.row = row;
+
+            color = Color.White;
+            fontStyle = FontStyle.Regular;
+
+            this.character = (char)0;
+            this.isTile = true;
+            this.tileNum = tileNum;
         }
 
         public Location term
