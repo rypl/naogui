@@ -1,4 +1,5 @@
 #summary Screen shots of GUI
+#labels screenshots,images,Featured
 
-= Introduction =
+= Screen Shots =
 None yet
