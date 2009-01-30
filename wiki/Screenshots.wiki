@@ -1,5 +1,5 @@
 #summary Screen shots of GUI
-#labels screenshots,images,Featured
+#labels Featured
 
 = Screen Shots =
 None yet
