@@ -1,0 +1,6 @@
+#summary Project Description
+#labels Featured,Phase-Deploy
+
+= Introduction =
+NetHack Online GUI using graphical tiles.
+[http://code.google.com/p/naogui/source/browse/trunk/Nethack%20Online%20GUI/nhtiles.bmp]
