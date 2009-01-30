@@ -3,4 +3,4 @@
 
 = Introduction =
 NetHack Online GUI using graphical tiles.
-[http://code.google.com/p/naogui/source/browse/trunk/Nethack%20Online%20GUI/nhtiles.bmp]
+[http://naogui.googlecode.com/svn/trunk/Nethack%20Online%20GUI/nhtiles.bmp]
