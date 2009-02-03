@@ -2,4 +2,4 @@
 #labels Featured
 
 = Screen Shots =
-None yet
+http://naogui.googlecode.com/files/0.01a-1.PNG
