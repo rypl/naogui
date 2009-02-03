@@ -144,25 +144,59 @@ namespace Nethack_Online_GUI
             return i;
         }
 
+        // will be private but for testing it will be public
         public List<TerminalCell> ProcessTerminalCommand(NetHackController nhControl, byte[] command, byte[] data)
         {
             List<TerminalCell> updateList = new List<TerminalCell>();
             TerminalCell[,] termCells = nhControl.getTermCells();
             TerminalCell termCell;
             
+            // [##d
             // Move to row
             if (command[command.Length - 1] == 'd')
             {
                 // (byte[]) [16d => (int) 16
                 int row = int.Parse(encoder.GetString(command, 1, command.Length - 2));
+                int col = 0;
 
                 // Copy data over
-                for (int i = 0; i < data.Length; ++i)
+                for (int i = col; i < data.Length; ++i)
                 {
                     termCell = new TerminalCell(i, row, (char)data[i]);
 
                     updateList.Add(termCell);
-                    termCells[0,row] = termCell;
+                    termCells[i,row] = termCell;
+                }
+            }
+
+            // [##;##H
+            // Move to row, col
+            else if (command[command.Length - 1] == 'H')
+            {
+                if (command.Length == 2)
+                {
+                    // return to home, and do whatever is necessary here...
+                }
+
+                else
+                {
+                    string commandStr = encoder.GetString(command);
+                    int locationOfSemicolon = commandStr.IndexOf(';')-1;
+                    int locationOfEnd = (commandStr.Length - 2) - (locationOfSemicolon + 1);
+
+                    int col = int.Parse(commandStr.Substring(1,locationOfSemicolon));
+                    int row = int.Parse(commandStr.Substring(locationOfSemicolon + 2, locationOfEnd));
+                    
+                    //Console.WriteLine("(" + row + "," + col + ")");
+
+                    // Copy data over
+                    for (int i = 0; i < data.Length; ++i)
+                    {
+                        termCell = new TerminalCell(i+col, row, (char)data[i]);
+
+                        updateList.Add(termCell);
+                        termCells[i+col, row] = termCell;
+                    }
                 }
             }
 
