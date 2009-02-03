@@ -100,8 +100,13 @@ namespace Nethack_Online_GUI
             ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[18d"), encoder.GetBytes(" => "));
             updateList.AddRange(ret);
 
-            wc.updateRender(updateList);
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[24;23H"), encoder.GetBytes("Pw:21(21) AC:3  Xp:5/202 T:2555"));
+            updateList.AddRange(ret);
 
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[1;1H"), encoder.GetBytes("This text goes at 1,1 -- hello world!, hello hello"));
+            updateList.AddRange(ret);
+
+            wc.updateRender(updateList);
             gamePanel.Invalidate();
 
 
