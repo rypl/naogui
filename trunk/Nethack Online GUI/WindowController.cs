@@ -10,9 +10,9 @@ namespace Nethack_Online_GUI
         const int NUM_TILES_DOWN = 30;
         int tileSize; // n x n pixel tile
 
-        Font font;      //
+        Font font;       //
         Bitmap tilesRaw; // our tile set
-        Bitmap render;  // final image to be put on screen
+        Bitmap render;   // final image to be put on screen
         NetHackController nc;
         Bitmap[,] tiles;
 
@@ -109,15 +109,19 @@ namespace Nethack_Online_GUI
             graph.DrawString(text, font, Brushes.White, col * tileSize, row * tileSize);
         }
 
+        public void drawCharacter(char c, Location term, Graphics graph)
+        {
+            graph.DrawString(c.ToString(), font, Brushes.White, term.col * tileSize, term.row * tileSize);
+        }
+
         public void updateRender(List<TerminalCell> updateList)
         {
             TerminalCell[,] termCells = nc.getTermCells();
             Bitmap buffer = new Bitmap(render);
             Graphics graph = Graphics.FromImage(buffer);
 
-            foreach (TerminalCell cell in updateList)
+            foreach (TerminalCell cell in termCells)//updateList
             {
-
                 if (cell.isTile)
                 {
                     drawTile(cell.tileNum, cell.term, graph);
@@ -125,11 +129,9 @@ namespace Nethack_Online_GUI
                 }
                 else
                 {
-                    drawText((cell.character).ToString(), cell.term, graph);
+                    drawCharacter(cell.character, cell.term, graph);
                     Console.WriteLine("drawText= " + cell.character + " (" + cell.col + "," + cell.row + ")");
                 }
-
-                
             }
 
             // THREAD UNSAFE
