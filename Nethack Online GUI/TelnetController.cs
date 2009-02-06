@@ -173,30 +173,33 @@ namespace Nethack_Online_GUI
             // Move to row, col
             else if (command[command.Length - 1] == 'H')
             {
-                if (command.Length == 2)
+                int col, row;
+
+                if (command.Length != 2)
                 {
-                    // return to home, and do whatever is necessary here...
+                    string commandStr = encoder.GetString(command);
+                    int locationOfSemicolon = commandStr.IndexOf(';') - 1;
+                    int locationOfEnd = (commandStr.Length - 2) - (locationOfSemicolon + 1);
+
+                    col = int.Parse(commandStr.Substring(1, locationOfSemicolon));
+                    row = int.Parse(commandStr.Substring(locationOfSemicolon + 2, locationOfEnd));
                 }
 
                 else
                 {
-                    string commandStr = encoder.GetString(command);
-                    int locationOfSemicolon = commandStr.IndexOf(';')-1;
-                    int locationOfEnd = (commandStr.Length - 2) - (locationOfSemicolon + 1);
+                    col = 0;
+                    row = 0;
+                }
 
-                    int col = int.Parse(commandStr.Substring(1,locationOfSemicolon));
-                    int row = int.Parse(commandStr.Substring(locationOfSemicolon + 2, locationOfEnd));
-                    
-                    //Console.WriteLine("(" + row + "," + col + ")");
+                //Console.WriteLine("(" + row + "," + col + ")");
 
-                    // Copy data over
-                    for (int i = 0; i < data.Length; ++i)
-                    {
-                        termCell = new TerminalCell(i+col, row, (char)data[i]);
+                // Copy data over
+                for (int i = 0; i < data.Length; ++i)
+                {
+                    termCell = new TerminalCell(col+i, row, (char)data[i]);
 
-                        updateList.Add(termCell);
-                        termCells[i+col, row] = termCell;
-                    }
+                    updateList.Add(termCell);
+                    termCells[col+i, row] = termCell;
                 }
             }
 

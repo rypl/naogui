@@ -78,35 +78,39 @@ namespace Nethack_Online_GUI
         {
             List<TerminalCell> updateList = new List<TerminalCell>();
             List<TerminalCell> ret;
+           
             // injecting data
             ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[7d"), encoder.GetBytes("## Games on this server are recorded for in-progress viewing and playback!"));
-            updateList.AddRange(ret);
-
-            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[9d"), encoder.GetBytes("Not logged in."));
-            updateList.AddRange(ret);
-
-            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[11d"), encoder.GetBytes(" l) Login"));
-            updateList.AddRange(ret);
-
-            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[12d"), encoder.GetBytes(" r) Register new user"));
-            updateList.AddRange(ret);
-
-            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[13d"), encoder.GetBytes(" w) Watch games in progress"));
-            updateList.AddRange(ret);
-
-            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[14d"), encoder.GetBytes(" q) Quit"));
-            updateList.AddRange(ret);
-
-            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[18d"), encoder.GetBytes(" => "));
-            updateList.AddRange(ret);
-
-            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[24;23H"), encoder.GetBytes("Pw:21(21) AC:3  Xp:5/202 T:2555"));
-            updateList.AddRange(ret);
-
-            //ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[1;1H"), encoder.GetBytes("This text goes at 1,1 -- hello world!, hello hello"));
             //updateList.AddRange(ret);
 
-            wc.updateRender(updateList);
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[9d"), encoder.GetBytes("Not logged in."));
+            //updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[11d"), encoder.GetBytes(" l) Login"));
+            //updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[12d"), encoder.GetBytes(" r) Register new user"));
+            //updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[13d"), encoder.GetBytes(" w) Watch games in progress"));
+            //updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[14d"), encoder.GetBytes(" q) Quit"));
+            //updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[18d"), encoder.GetBytes(" => "));
+            //updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[24;23H"), encoder.GetBytes("Pw:21(21) AC:3  Xp:5/202 T:2555"));
+            //updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[0;0H"), encoder.GetBytes("This text goes at 1,1 -- hello world!1234567890"));
+            //updateList.AddRange(ret);
+
+            ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[0;1H"), encoder.GetBytes("-----------------------------------------------"));
+            //updateList.AddRange(ret);
+
+            //wc.updateRender(updateList);
             gamePanel.Invalidate();
 
 

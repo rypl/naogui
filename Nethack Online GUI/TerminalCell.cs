@@ -10,8 +10,8 @@ namespace Nethack_Online_GUI
     public class TerminalCell
     {
         public int row, col;
-        public Color color;
-        public FontStyle fontStyle;
+        //public Color color;
+        //public FontStyle fontStyle;
         public char character;
         public bool isTile;
         public int tileNum;
@@ -21,11 +21,11 @@ namespace Nethack_Online_GUI
             this.col = col;
             this.row = row;
 
-            color = Color.White;
-            fontStyle = FontStyle.Regular;
+            //color = Color.White;
+            //fontStyle = FontStyle.Regular;
             character = (char)0;
             isTile = true;
-            tileNum = 1131;
+            tileNum = 1057; // first blank tile
         }
 
         public TerminalCell(int col, int row, char character)
@@ -33,8 +33,8 @@ namespace Nethack_Online_GUI
             this.col = col;
             this.row = row;
 
-            color = Color.White;
-            fontStyle = FontStyle.Regular;
+            //color = Color.White;
+            //fontStyle = FontStyle.Regular;
             this.character = character;
             this.isTile = false;
             this.tileNum = -1;
@@ -45,8 +45,8 @@ namespace Nethack_Online_GUI
             this.col = col;
             this.row = row;
 
-            color = Color.White;
-            fontStyle = FontStyle.Regular;
+            //color = Color.White;
+            //fontStyle = FontStyle.Regular;
 
             this.character = (char)0;
             this.isTile = true;
