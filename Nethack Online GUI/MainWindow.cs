@@ -110,7 +110,7 @@ namespace Nethack_Online_GUI
             ret = tc.ProcessTerminalCommand(nc, encoder.GetBytes("[0;1H"), encoder.GetBytes("-----------------------------------------------"));
             //updateList.AddRange(ret);
 
-            //wc.updateRender(updateList);
+            wc.updateRender(updateList);
             gamePanel.Invalidate();
 
 

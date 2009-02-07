@@ -203,6 +203,9 @@ namespace Nethack_Online_GUI
                 }
             }
 
+            // THREAD UNSAFE
+            nhControl.setTermCells(termCells);
+
             return updateList;
         }
 
