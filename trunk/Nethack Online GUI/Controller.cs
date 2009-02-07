@@ -8,6 +8,7 @@ namespace Nethack_Online_GUI
     {
         static void Main()
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             //NethackController nhControl;
             //Form myLoginWindow;
             Form myMainWindow;
