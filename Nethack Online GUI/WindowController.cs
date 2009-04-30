@@ -64,9 +64,9 @@ namespace Nethack_Online_GUI
             graph.DrawImage(render,0,0);
 
             // Draw random tiles
-            //for (int row = 0; row < TelnetHelper.TERMINAL_ROWS; ++row)
-            //    for (int col = 0; col < TelnetHelper.TERMINAL_COLS; ++col)
-            //        drawTile((new Random()).Next(100), new Location(col, row), graph);
+            for (int row = 0; row < TelnetHelper.TERMINAL_ROWS; ++row)
+                for (int col = 0; col < TelnetHelper.TERMINAL_COLS; ++col)
+                    drawTile((new Random()).Next(100), new Location(col, row), graph);
         }
 
 
@@ -117,7 +117,7 @@ namespace Nethack_Online_GUI
         public void updateRender(List<TerminalCell> updateList)
         {
             TerminalCell[,] termCells = nc.getTermCells();
-            Bitmap buffer = new Bitmap(render);
+            Bitmap buffer = new Bitmap(render); //THREAD UNSAFE
             Graphics graph = Graphics.FromImage(buffer);
 
             foreach (TerminalCell cell in termCells)//updateList
